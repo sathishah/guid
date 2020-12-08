@@ -1,4 +1,4 @@
-class uuid extends Uint16Array {
+class uuid extends Uint8Array {
 	
 	constructor() {
 		super(16);
