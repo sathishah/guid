@@ -1,28 +1,35 @@
-class uuid extends Uint8Array {
-	
-	constructor() {
-		super(16);
-		/* not v4, just some random bytes */
-		window.crypto.getRandomValues(this);
-	}
-	
-	public generateGUID(): string | null {
-		let guID = new String();
-		for (let i = 0; i < this.length; i++) {
-			/*convert uint16 to hex string */
-			let hex = this[i].toString(16).toUpperCase();
+export class GuidService {
 
-			/*add zero padding*/
-			while (hex.length < 2) {
-				hex = String(0).concat(hex);
-			}
-			guID += hex;
+    public getGUID: String | any;
 
-			/* add dashes */
-			if (i == 4 || i == 6 || i == 8 || i == 10 || i == 16){
-				guID += '-';
-			}
-		}
-		return guID;
-	}
+    constructor() {
+        this.getGUID = (typeof (window.crypto) != 'undefined' &&
+            typeof (window.crypto.getRandomValues) != 'undefined') ?
+            this.generateGUIDCrypto() :
+            this.generateGUIDRandom();
+        return this.getGUID;
+    }
+
+    public generateGUIDCrypto(): String | null {
+        let buffer = new Uint16Array(8);
+
+        window.crypto.getRandomValues(buffer);
+
+        let str = function (number: any) {
+            let retStr = number.toString(16);
+            while (retStr.length < 4) {
+                retStr = "0" + retStr;
+            }
+            return retStr;
+        };
+
+        return (str(buffer[0]) + str(buffer[1]) + "-" + str(buffer[2]) + "-" + str(buffer[3]) + "-" + str(buffer[4]) + "-" + str(buffer[5]) + str(buffer[6]) + str(buffer[7]));
+    }
+
+    public generateGUIDRandom(): String | null {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
 }
