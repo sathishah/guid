@@ -7,7 +7,18 @@ export class GuidService {
             typeof (window.crypto.getRandomValues) != 'undefined') ?
             this.generateGUIDCrypto() :
             this.generateGUIDRandom();
+    }
+
+    public getGuid(): String | null {
         return this.getGUID;
+    }
+
+    public getString(number: any) {
+        let retStr = number.toString(16);
+        while (retStr.length < 4) {
+            retStr = "0" + retStr;
+        }
+        return retStr;
     }
 
     public generateGUIDCrypto(): String | null {
@@ -15,15 +26,7 @@ export class GuidService {
 
         window.crypto.getRandomValues(buffer);
 
-        let str = function (number: any) {
-            let retStr = number.toString(16);
-            while (retStr.length < 4) {
-                retStr = "0" + retStr;
-            }
-            return retStr;
-        };
-
-        return (str(buffer[0]) + str(buffer[1]) + "-" + str(buffer[2]) + "-" + str(buffer[3]) + "-" + str(buffer[4]) + "-" + str(buffer[5]) + str(buffer[6]) + str(buffer[7]));
+        return (this.getString(buffer[0]) + this.getString(buffer[1]) + "-" + this.getString(buffer[2]) + "-" + this.getString(buffer[3]) + "-" + this.getString(buffer[4]) + "-" + this.getString(buffer[5]) + this.getString(buffer[6]) + this.getString(buffer[7]));
     }
 
     public generateGUIDRandom(): String | null {
